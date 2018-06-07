@@ -1,0 +1,47 @@
+A segurança em redes sem fio merece uma atenção redobrada por ser mais fácil de se ter acesso a ela. Em redes cabeadas, para realizar um ataque é necessário estar ligado ao cabo, fisicamente, o que se torna mais difícil, mas não impossível.
+
+Para realizar a segurança das redes sem fio \textit{WiFi} existem 3 padrões de criptografia de dados, sendo eles, WEP, WPA e WPA2. A criptografia utiliza muito o endereço MAC dos dispositivos e cada padrão utiliza um algoritmo e uma forma de criação das chaves de segurança.
+
+\subsection{WEP - \textit{Wired Equivalent Privacy}}
+
+Esse foi o primeiro padrão para a segurança das redes \textit{WiFi}. É baseado no algoritmo de RC4, que é bastante utilizado não só em redes sem fio, porém é muito inseguro por ter a necessidade de que os dois lados, estação e Ponto de Acesso, saibam a chave de criptografia e descriptografia.
+
+Essa chave é de 24 \textit{bits}, o que faz com que em pouco tempo tenhamos uma chave repetida sendo utilizada. Uma alternativa para conter que essa repetição de chave se torne um problema seria mudar a chave a cada transmissão, porém isso não seria nada prático. 
+
+Por esse motivo, esse padrão de criptografia deve ser evitado, pois através desse padrão é possível ter ataques que alteram bits nas mensagens, e ainda conseguir recalcular o CRC, fazendo assim com que a mensagem alterada seja aceita, além do fato que em 2004 a Wi-Fi Alliance encerrou o suporte para esse padrão.
+
+\subsection{WPA - \textit{Wi-Fi Protected Access}}
+
+Foi criado com a finalidade de tapar os furos deixados pelo WEP. Utilizando uma chave de 48 \textit{bits}, que é configurada no ponto de acesso e é misturada com o MAC, para ter a repetição de chave praticamente anulada, desses 48 \textit{bits} somente 16 estão disponíveis, e além disso existe uma chave para cada sentido, ou seja, uma chave para estação - ponto de acesso, e uma chave para ponto de acesso - estação.
+
+A chave varia a cada quadro de dados e tem um número de sequência, que ajuda a minimizar os ataques \textit{replay}. Esse ataque ocorre quando o atacante a rede tenta enviar um quadro com alguma alteração e este já foi enviado, com esse número de sequência, se chegar um quadro com o número de sequência menor do que o número do último quadro recebido, o quadro em questão é rejeitado. Ainda utiliza MIC (\textit{Message Integraty Check}), ou seja, se em 60 segundos mais de um quadro ter falha no teste de integridade a rede é bloqueada por 60 segundos, para evitar os ataques que podem estar sendo tentados.
+
+Por mais que esse padrão tenha muitas melhoras visto o que o padrão WEP oferece, mesmo assim ele só deve ser utilizado se o último padrão, WPA2, não estiver disponível, por ainda ter formas "fáceis" de ser atacada.
+
+\subsection{WPA2 - \textit{Wi-Fi Protected Access} 2}
+
+Ao contrário do WPA, que foi criado para tapar os furos do WEP, o WPA2 foi criado totalmente com base no IEEE 802.11i, uma criptografia nova e por completo, utilizando dois algoritmos, TKIP E CCMP.
+
+Esse padrão tem 4 componentes-chave:
+
+\begin{itemize}
+\item \textbf{Protocolo de autenticação} - como o nome sugere, é um protocolo (EAP - \textit{Extensible authentication Protocol}), ou até um servidor de autenticação (RADIUS);
+\item \textbf{Protocolo RSN (\textit{Robust Secure Network})} - realização de rastreio de associações e negociações de segurança;
+\item \textbf{Algoritmo AES-CCMP} - algoritmo de criptografia;
+\item \textbf{Negociação (\textit{handshake})} - utilização de 4 vias para a troca de chaves, números aleatórios únicos, evitando o conhecido ataque \textit{replay}
+\end{itemize}
+
+Esse padrão tem 2 tipos de chaves: pares de chaves e chaves de grupo. O primeiro é entre o ponto de acesso - estação, e vice-versa, e o segundo é em \textit{broadcast} e \textit{multicast}. A PMK é a chave mestra dos pares de chaves, enquanto a GMK é a chave mestra dos grupos, essas chaves são configuradas manualmente no ponto de acesso e nas placas de rede, as demais chaves são geradas aleatoriamente, utilizando como base a chave mestra, o MAC, tanto do ponto de acesso quanto da estação, e ainda um número aleatório.
+
+A utilização da negociação se da por esses 4 passos segundo \cite{torres2015redes}:
+
+\begin{enumerate}
+\item O ponto de acesso envia a estação um número aleatório e a estação consegue construir um dos pares da chave transiente (PTK, um par de chaves);
+\item A estação envia ao ponto de acesso um número aleatório e o ponto de acesso consegue construir o outro par das chaves, e aqui temos a utilização do MIC;
+\item Nesse passo o ponto de acesso envia para a estação a GTK, uma chave pertencente ao grupo, para as conexões \textit{broadcast} e \textit{multicast}, uma sequência de número aleatório e utilizando o MIC, esse número de sequência que é enviado é na verdade o número de sequência que será utilizado no próximo quadro.
+\item A estação envia uma confirmação ao ponto de acesso.
+\end{enumerate}
+
+A estação e o ponto de acesso tem PTKs diferentes, e dentro de cada chave se encontra uma chave temporal, que é utilizada pelos algoritmos de criptografia. Cada chave temporal é gerada através da negociação de 4 vias.
+
+Esse padrão é o mais seguro dos 3, pela forma como as chaves são geradas e pela negociação de 4 vias, então quando realizar a configuração de aparelhos é bom sempre optar pelo padrão WPA2, claro que talvez existam aparelhos que ainda não tenham suporte ao padrão WPA2, então na hora de comprar um é sempre bom ver se existe esse suporte.
